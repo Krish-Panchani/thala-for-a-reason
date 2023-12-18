@@ -8,25 +8,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Check if input contains 7 characters
     $charCount = strlen($input);
-    $isCharCountValid = ($charCount === 7);
+    $isInputValid = ($charCount === 7);
 
     // Check if input contains numbers that sum up to 7
 
     if (is_numeric($input)) {
-        $num = $input;
-        $sum = 0;
-        $rem = 0;
-        for ($i = 0; $i <= strlen($num); $i++) {
-            $rem = $num % 10;
-            $sum = $sum + $rem;
-            $num = $num / 10;
-        }
-        $isSumValid = ($sum === 7);
+
+        function sum($num) { 
+            $sum = 0; 
+            for ($i = 0; $i < strlen($num); $i++){ 
+                $sum += $num[$i]; 
+            } 
+            return $sum; 
+        } 
+        $summ = sum($input);
+        $isInputValid = ($summ === 7);
     }
     // If either condition is true, save the data in the database
-    if ($isCharCountValid || $isSumValid) {
+    if ($isInputValid) {
 
-        $encoded = base64_encode($input);
+        $encoded = uniqid(base64_encode($input));
         // Prepare and execute the SQL query
         $sql = "INSERT INTO thala (input, encoded, status, name) VALUES ('$input', '$encoded', 'true', '$name')";
         if ($conn->query($sql) === TRUE) {
